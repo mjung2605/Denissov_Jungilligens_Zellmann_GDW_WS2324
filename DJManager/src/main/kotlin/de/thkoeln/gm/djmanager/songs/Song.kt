@@ -23,7 +23,7 @@ class Song {
     var songId: String = "" // identifier in spotify
     var artist: String = ""
     var artistId: String = "" // identifier in spotify
-    var energylvl: Float = 0.0F
+    var energylvl: Double = 0.0
     var votes: Int = 0
 
     @ManyToMany(mappedBy="songs")
