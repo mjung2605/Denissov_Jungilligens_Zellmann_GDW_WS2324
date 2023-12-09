@@ -1,5 +1,6 @@
 package de.thkoeln.gm.djmanager.users
 
+import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import org.hibernate.annotations.GenericGenerator
@@ -11,6 +12,8 @@ import java.util.*
 enum class Role {
     GUEST, ADMIN
 }
+
+@Entity
 class User {
 
     @Id
