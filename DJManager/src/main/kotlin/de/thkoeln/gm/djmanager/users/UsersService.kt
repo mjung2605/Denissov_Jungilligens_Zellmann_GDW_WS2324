@@ -7,5 +7,5 @@ interface UsersService {
     fun findById(id: UUID): User?
     fun save(user: User)
     fun delete(user: User)
-    fun getPlaylists(user: User)
+    //fun getPlaylists(user: User)
 }

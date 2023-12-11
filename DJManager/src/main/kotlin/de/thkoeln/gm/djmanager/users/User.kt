@@ -21,8 +21,8 @@ class User {
     var username: String = ""
     // spotify oAuth?
 
-    @ManyToMany(mappedBy = "playlists")
-    var playlists: MutableList<Playlist> = mutableListOf()
+
+    //var playlists: MutableList<Playlist> = mutableListOf()
 
     override fun toString(): String {
         return "Nutzer in dieser Party-Playlist: $username"

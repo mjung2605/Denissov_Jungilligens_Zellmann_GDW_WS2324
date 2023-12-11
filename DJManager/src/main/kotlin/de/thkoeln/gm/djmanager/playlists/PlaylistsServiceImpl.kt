@@ -1,20 +1,22 @@
 package de.thkoeln.gm.djmanager.playlists
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class PlaylistsServiceImpl() : PlaylistsService {
+class PlaylistsServiceImpl(private val playlistsRepository: PlaylistsRepository) : PlaylistsService {
     override fun findById(id: UUID): Playlist? {
-        TODO("Not yet implemented")
+        return playlistsRepository.findByIdOrNull(id)
     }
 
     override fun save(playlist: Playlist): Playlist {
-        TODO("Not yet implemented")
+        playlistsRepository.save(playlist)
+        return playlist
     }
 
     override fun delete(playlist: Playlist) {
-        TODO("Not yet implemented")
+        playlistsRepository.delete(playlist)
     }
 
 

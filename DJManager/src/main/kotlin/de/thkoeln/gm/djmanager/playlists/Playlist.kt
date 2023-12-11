@@ -19,16 +19,16 @@ class Playlist {
     var adminName: String = ""
 
     // beziehung zwischen playlist und songs
-    @OneToMany(mappedBy="songs")
-    var songs: MutableList<Song> = mutableListOf()
+    // @OneToMany(mappedBy="playlist")
+    // var songs: MutableList<Song> = mutableListOf()
 
     // beziehung zwischen playlists und teilnehmenden usern
-    @ManyToMany
-    @JoinTable(name = "user_playlist", joinColumns = [JoinColumn(name = "user_id")], inverseJoinColumns = [JoinColumn(name = "playlist_id")])
-    var users: MutableList<User> = mutableListOf() // set hat keine duplikate
+    // @ManyToMany
+    // @JoinTable(name = "user_playlist", joinColumns = [JoinColumn(name = "user_id")], inverseJoinColumns = [JoinColumn(name = "playlist_id")])
+    // var users: MutableList<User> = mutableListOf() // set hat keine duplikate
 
     override fun toString(): String {
-        return "Auf der Party-Playlist ($partyLoc am $partyDate um $partyTime Uhr) werden folgende Songs gespielt: $songs (generiert aus Wünschen von $users)"
+        return "Auf der Party-Playlist ($partyLoc am $partyDate um $partyTime Uhr) werden folgende Songs gespielt:" // $songs (generiert aus Wünschen von $users)"
     }
 
 }

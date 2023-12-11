@@ -21,19 +21,19 @@ class Song {
     var id: UUID = UUID.randomUUID()
 
     var name: String = ""
-    var songId: String = "" // identifier in spotify
+    var spotifySongId: String = "" // identifier in spotify
     var artist: String = ""
-    var artistId: String = "" // identifier in spotify
+    var spotifyArtistId: String = "" // identifier in spotify
     var energylvl: Double = 0.0
     var votes: Int = 0
 
-    @ManyToOne
-    @JoinColumn(name="song_id")
-    var playlist: Playlist? = null
+    // @ManyToOne
+    // @JoinColumn(name="playlist_id")
+    // val playlist: Playlist? = null
 
 
     override fun toString(): String {
-        return "Der Song $name von $artist hat momentan $votes Stimmen und ein Energielevel von $energylvl. Er befindet sich in Playlist $playlist"
+        return "Der Song $name von $artist hat momentan $votes Stimmen und ein Energielevel von $energylvl. "//Er befindet sich in Playlist $playlist"
     }
 
 }

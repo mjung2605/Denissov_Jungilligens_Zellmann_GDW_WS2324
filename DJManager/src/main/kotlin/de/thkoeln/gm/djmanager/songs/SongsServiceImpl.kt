@@ -11,13 +11,17 @@ class SongsServiceImpl(private val songsRepository: SongsRepository) : SongsServ
         return songsRepository.findByIdOrNull(id)
     }
 
+    /**
     override fun findByArtist(artistId: String): List<Song>? {
         return songsRepository.findByArtist(artistId)
     }
+    **/
 
+    /**
     override fun getAllByVotes(): List<Song>? {
         return songsRepository.getAllOrderByVotes()
     }
+    **/
 
     // saves new song with +1 vote, if already saved adds a vote
     override fun saveSong(song: Song) {

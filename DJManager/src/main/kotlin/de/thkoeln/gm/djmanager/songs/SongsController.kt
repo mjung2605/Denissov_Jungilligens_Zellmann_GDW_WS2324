@@ -30,6 +30,7 @@ class SongsController(private val songsService: SongsService, private val usersS
         return song.toString()
     }
 
+    /**
     @PostMapping("/songs")
     @ResponseBody
     fun saveSongByArtist(artistId: String): String {
@@ -54,6 +55,7 @@ class SongsController(private val songsService: SongsService, private val usersS
         val songList = songsService.getAllByVotes() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         return "Eine Liste der Songs, sortiert nach Stimmenanzahl: $songList"
     }
+    **/
 
     @PutMapping("/playlists/{playlistid}/songs/{songid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

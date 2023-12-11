@@ -43,9 +43,13 @@ class UsersController(private val usersService: UsersService) {
         usersService.delete(user)
     }
 
+
+    /*
     @GetMapping("/users/{userid}/playlists")
     fun getUserPLaylists(@PathVariable userid: UUID): List<Playlist> {
         val user = usersService.findById(userid) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         return user.playlists
     }
+    
+     */
 }
