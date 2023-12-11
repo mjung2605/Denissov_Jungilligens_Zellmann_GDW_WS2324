@@ -3,28 +3,32 @@ package de.thkoeln.gm.djmanager.playlists
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import de.thkoeln.gm.djmanager.songs.Song
 import de.thkoeln.gm.djmanager.users.User
-import jakarta.persistence.Entity
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinColumns
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
+import jakarta.persistence.*
+import org.hibernate.annotations.GenericGenerator
 
 @Entity
 class Playlist {
 
-    var ort: String = ""
-    var zeit: String = ""
-    var playlist: List<Song> = listOf()
-    var users: List<User> = listOf()
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    var partyLoc: String = ""
+    var partyDate: String = ""
+    var partyTime: String = ""
 
+    var adminName: String = ""
 
-    // beziehung zwischen playlists uns songs
-    @ManyToMany(mappedBy="songs")
-    @JoinTable(name = "playlist_song", joinColumns = [JoinColumn(name = "playlist_id")], inverseJoinColumns = [JoinColumn(name = "song_id")])
-    var songs: MutableSet<Song> = HashSet()
+    // beziehung zwischen playlist und songs
+    @OneToMany(mappedBy="songs")
+    var songs: MutableList<Song> = mutableListOf()
+
+    // beziehung zwischen playlists und teilnehmenden usern
+    @ManyToMany
+    @JoinTable(name = "user_playlist", joinColumns = [JoinColumn(name = "user_id")], inverseJoinColumns = [JoinColumn(name = "playlist_id")])
+    var users: MutableList<User> = mutableListOf() // set hat keine duplikate
 
     override fun toString(): String {
-        return "Auf der Party-Playlist ($ort, um $zeit Uhr) werden folgende Songs gespielt: $playlist (generiert aus Wünschen von $users)"
+        return "Auf der Party-Playlist ($partyLoc am $partyDate um $partyTime Uhr) werden folgende Songs gespielt: $songs (generiert aus Wünschen von $users)"
     }
 
 }

@@ -1,22 +1,17 @@
 package de.thkoeln.gm.djmanager.songs
 
-import de.thkoeln.gm.djmanager.users.Role
+import de.thkoeln.gm.djmanager.playlists.PlaylistsService
 import de.thkoeln.gm.djmanager.users.User
 import de.thkoeln.gm.djmanager.users.UsersService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Controller
-class SongsController(private val songsService: SongsService, private val usersService: UsersService) {
+class SongsController(private val songsService: SongsService, private val usersService: UsersService, val playlistsService: PlaylistsService) {
 
     @PostMapping("/songs")
     @ResponseBody
@@ -53,24 +48,34 @@ class SongsController(private val songsService: SongsService, private val usersS
         return responseString
     }
 
-    @GetMapping("/songs")
-    @ResponseBody
-    fun getSongsByVotesDesc(): String {
+    @GetMapping("/playlists/{playlistid}/songs")
+    @ResponseBody // TODO(ändern, dass einfach eine liste zurückgegeben wird)
+    fun getSongsByVotesDesc(@PathVariable playlistid: UUID): String {
         val songList = songsService.getAllByVotes() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         return "Eine Liste der Songs, sortiert nach Stimmenanzahl: $songList"
     }
 
-
-    @DeleteMapping("/songs/{id}")
+    @PutMapping("/playlists/{playlistid}/songs/{songid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteSong(@PathVariable id: UUID, user: User) {
+    fun updateSongVoteIncrByOne(@PathVariable playlistid: UUID, @PathVariable songid: UUID) {
+
+        val playlistByID = playlistsService.findById(playlistid) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        val songId = songsService.findByID(songid) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        TODO("implement vote +1 logic")
+    }
+
+    @DeleteMapping("/playlists/{playlistid}/songs/{songid}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteSong(@PathVariable playlistid: UUID, @PathVariable songid: UUID, user: User) {
 
         // notwendig?
-        var songById = songsService.findByID(id)
+        val playlistById = playlistsService.findById(playlistid)
+        var songById = songsService.findByID(songid)
         var userById = usersService.findCurrentUser(user.id)
 
-        if (songById != null && userById != null) {
-            if (userById.role == Role.ADMIN) { // nur admin kann songs löschen
+        if (songById != null && userById != null && playlistById != null) {
+            if (userById.username == playlistById.adminName) { // nur admin kann songs löschen
 
                 songsService.delete(songById)
 
@@ -80,18 +85,19 @@ class SongsController(private val songsService: SongsService, private val usersS
         else throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @DeleteMapping("/songs")
+    @DeleteMapping("/playlists/{playlistid}/songs")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteAllSongs(user: User) {
+    fun deleteAllSongs(@PathVariable playlistid: UUID, user: User) {
 
-        // notwendig?
-        var userById = usersService.findCurrentUser(user.id)
+        val playlistById = playlistsService.findById(playlistid)
+        val userById = usersService.findCurrentUser(user.id)
 
-        if (userById != null && userById.role == Role.ADMIN) {
-            songsService.deleteAll()
-
+        if (userById != null && playlistById != null) {
+            if (userById.username == playlistById.adminName) {
+                songsService.deleteAll()
+            } else throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        else throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        else throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
 }

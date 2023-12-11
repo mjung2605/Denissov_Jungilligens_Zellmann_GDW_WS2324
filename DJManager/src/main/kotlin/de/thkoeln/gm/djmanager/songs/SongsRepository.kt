@@ -19,8 +19,4 @@ interface SongsRepository: CrudRepository<Song, UUID> {
     @Query(value = "SELECT * FROM Song s ORDER BY s.votes DESC")
     fun getAllOrderByVotes(): List<Song>?
 
-
-
-
-
 }

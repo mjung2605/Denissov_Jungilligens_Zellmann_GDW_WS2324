@@ -1,17 +1,14 @@
 package de.thkoeln.gm.djmanager.users
 
+import de.thkoeln.gm.djmanager.playlists.Playlist
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 import org.hibernate.annotations.GenericGenerator
 import java.util.*
+import kotlin.collections.HashSet
 
-/** Legt fest, ob der angemeldete Nutzer nur Songs hinzufügen oder auch löschen kann.
- * Das Löschen wird nur dem Admin ("DJ") der Party erlaubt, um gegenseitiges Löschen der Submissions unter Nutzern/
- * Gästen zu verhindern. **/
-enum class Role {
-    GUEST, ADMIN
-}
 
 @Entity
 class User {
@@ -23,10 +20,12 @@ class User {
 
     var username: String = ""
     // spotify oAuth?
-    var role: Role = Role.GUEST // als default wert
+
+    @ManyToMany(mappedBy = "playlists")
+    var playlists: MutableList<Playlist> = mutableListOf()
 
     override fun toString(): String {
-        return "Nutzer in dieser Party-Playlist: "
+        return "Nutzer in dieser Party-Playlist: $username"
     }
 
 }
