@@ -8,6 +8,4 @@ interface PlaylistsService {
     fun save(playlist: Playlist): Playlist
     fun delete(playlist: Playlist)
 
-
-
 }

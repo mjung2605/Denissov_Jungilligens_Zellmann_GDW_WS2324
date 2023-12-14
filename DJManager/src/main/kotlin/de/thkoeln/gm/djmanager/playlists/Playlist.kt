@@ -5,6 +5,8 @@ import de.thkoeln.gm.djmanager.songs.Song
 import de.thkoeln.gm.djmanager.users.User
 import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator
+import java.util.*
+
 
 @Entity
 class Playlist {
@@ -12,11 +14,13 @@ class Playlist {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    val id: UUID = UUID.randomUUID()
+
     var partyLoc: String = ""
     var partyDate: String = ""
     var partyTime: String = ""
 
-    var adminName: String = ""
+    var adminName: String? = null
 
     // beziehung zwischen playlist und songs
     // @OneToMany(mappedBy="playlist")

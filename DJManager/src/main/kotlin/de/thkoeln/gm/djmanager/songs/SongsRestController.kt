@@ -4,18 +4,17 @@ import de.thkoeln.gm.djmanager.playlists.PlaylistsService
 import de.thkoeln.gm.djmanager.users.User
 import de.thkoeln.gm.djmanager.users.UsersService
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
-@Controller
-class SongsController(private val songsService: SongsService, private val usersService: UsersService, val playlistsService: PlaylistsService) {
+@RestController
+class SongsRestController(private val songsService: SongsService, private val usersService: UsersService, val playlistsService: PlaylistsService) {
 
-    @PostMapping("/songs")
+    @PostMapping("playlists/{playlistid}/songs")
     @ResponseBody
-    fun saveSong(name: String, artist: String): String {
+    fun saveSong(name: String, artist: String, @PathVariable playlistid: String): Song {
 
         // hier später Verbindung zu Spotify API um Song eindeutig identifizieren zu können
 
@@ -27,7 +26,7 @@ class SongsController(private val songsService: SongsService, private val usersS
         // später Logik implementieren: wenn Song Duplikat: +1 Stimme
 
         songsService.saveSong(song)
-        return song.toString()
+        return song
     }
 
     /**
@@ -64,7 +63,7 @@ class SongsController(private val songsService: SongsService, private val usersS
         val playlistByID = playlistsService.findById(playlistid) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         val songId = songsService.findByID(songid) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-        TODO("implement vote +1 logic")
+
     }
 
     @DeleteMapping("/playlists/{playlistid}/songs/{songid}")

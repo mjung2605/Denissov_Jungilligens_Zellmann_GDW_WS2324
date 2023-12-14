@@ -1,13 +1,14 @@
-package de.thkoeln.gm.djmanager.poc
+package de.thkoeln.gm.djmanager
 
+/*
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.adamratzman.spotify.SpotifyApiBuilder
+import com.adamratzman.spotify.SpotifyApiOptions
 import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.SpotifyClientApi
-import com.adamratzman.spotify.auth.SpotifyApiOptions
-import com.adamratzman.spotify.models.Track
+
 
 @Controller
 class PocController {
@@ -22,19 +23,16 @@ class PocController {
     @ResponseBody
     fun runPoc(): String {
 
-        val api = SpotifyApiBuilder(
-            SpotifyApiOptions.Builder()
-                .clientId("8010080d996747fe9c939b66ece3377a")
-                .clientSecret("8060fe36cf604f6aa92bc000c4e1b89a")
-                .redirectUri("http://localhost:8080/poc")
-                .build()
-        ).build()
+        val spotifyApi = SpotifyApiBuilder(
+                 "8010080d996747fe9c939b66ece3377a",
+                "8060fe36cf604f6aa92bc000c4e1b89a",
+                "http://localhost:8080/poc"
+        ).authorization
 
-        // Erstellen der Spotify-API
-        val appApi = SpotifyAppApi(api)
+        val appApi = SpotifyAppApi("8010080d996747fe9c939b66ece3377a", "8060fe36cf604f6aa92bc000c4e1b89a", "http://localhost:8080/poc")
 
         // Erstellen der Spotify-Client-API
-        val clientApi = SpotifyClientApi(api)
+        val clientApi = SpotifyClientApi()
 
 
         appApi.getCurrentTrack { track ->
@@ -45,8 +43,8 @@ class PocController {
         appApi.getCurrentTrackImage { bitmap ->
 
         }
-
-
         return "Run poc"
     }
 }
+
+ */
