@@ -19,6 +19,8 @@ class User {
     var id: UUID = UUID.randomUUID()
 
     var username: String = ""
+
+    var email: String = ""
     // spotify oAuth?
 
 

@@ -1,12 +1,18 @@
 package de.thkoeln.gm.djmanager.spotifyauths
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.FormHttpMessageConverter
 import org.springframework.ui.Model
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.postForEntity
 
 @RestController
 class SpotifyAuthRestController {
@@ -34,27 +40,46 @@ class SpotifyAuthRestController {
     @GetMapping("/callback")
     fun callback(@RequestParam("code") code: String, model: Model): String {
         val restTemplate = RestTemplate()
+
+        restTemplate.messageConverters.add(FormHttpMessageConverter())
+
+
         val headers = org.springframework.http.HttpHeaders().apply {
             contentType = MediaType.APPLICATION_FORM_URLENCODED
         }
-        val body = mapOf(
-            "grant_type" to "authorization_code",
-            "code" to code,
-            "redirect_uri" to redirectUri,
-            "client_id" to clientId,
-            "client_secret" to clientSecret
-        )
+
+        val body = LinkedMultiValueMap<String, String>().apply {
+            add("grant_type", "authorization_code")
+            add("code", code)
+            add("redirect_uri", redirectUri)
+            add("client_id", clientId)
+            add("client_secret", clientSecret)
+        }
+
 
         val entity = HttpEntity(body, headers)
 
-        val response = restTemplate.postForEntity(
-            "https://accounts.spotify.com/api/token",
-            entity,
-            Map::class.java
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(
+                "https://accounts.spotify.com/api/token",
+        entity,
+        SpotifyTokenResponse::class // Verwende hier den Typ der Antwort von Spotify
         )
 
-        val accessToken = response.body?.get("access_token") ?: "No access token received"
+        val responseBody = responseEntity.body // Hier sollte der Antworttext als String vorliegen
+
+        val mapper = ObjectMapper()
+        val map: Map<String, Any> = mapper.readValue(responseBody as String, object : TypeReference<Map<String, Any>>() {})
+        val accessToken = map["access_token"] as? String ?: "No access token received"
         model.addAttribute("accessToken", accessToken)
-        return "callback"
+
+        return accessToken // wird momentan einfach als string zurückgegeben
     }
+
 }
+
+data class SpotifyTokenResponse(
+    val access_token: String,
+    val token_type: String,
+    val expires_in: Int
+    // andere Felder entsprechend der Antwort
+)
