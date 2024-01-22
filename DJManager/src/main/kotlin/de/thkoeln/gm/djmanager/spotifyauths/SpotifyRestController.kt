@@ -29,14 +29,14 @@ class SpotifySearchController(private val songsService: SongsService) {
         return responseEntity.body ?: "No results found"
     }
 
-    //Nach einem Song suchen und abspeichern
+    //Nach einem Song suchen und in der Playlist abspeichern
     @GetMapping("/findAndSaveOneSong")
     fun findAndSaveOneSong(
         @RequestParam("song") song: String,
         @RequestParam("interpret") interpret: String,
         @RequestParam("accessToken") accessToken: String
     ): Boolean {
-        val songs:List<String> = getSongsByTitleAndInterpret(song, interpret, accessToken)
+        val songs:List<String> = getSongsByTitleAndInterpret(song, interpret, accessToken) //Methode sucht nach bestimmten Song
         if(songs.size==1){
             saveSong(songs[0])
             return true
@@ -53,10 +53,11 @@ class SpotifySearchController(private val songsService: SongsService) {
         @RequestParam("interpret") interpret: String,
         @RequestParam("accessToken") accessToken: String
     ): List<String> {
-        val songs:List<String> = getSongsByTitleAndInterpret(song, interpret, accessToken)
+        val songs:List<String> = getSongsByTitleAndInterpret(song, interpret, accessToken) //Methode gibt Liste mit Songs zurück
         return songs
     }
 
+    //Methode wird aufgerufen, nachdem Benutzer einen bestimmten Song aus der Songliste ausgewählt hat
     @GetMapping("/saveSong")
     fun findSongs(
         @RequestParam("titel") titel: String,
@@ -64,22 +65,23 @@ class SpotifySearchController(private val songsService: SongsService) {
         saveSong(titel)
     }
 
+    //Songtitel wird der Playlist hinzugefügt
     fun saveSong(titel:String){
        var song = Song()
        song.name = titel
        songsService.saveSong(song)
    }
-
+    //Suche innerhalb Spotify-Webservice nach Song, Titel und Interpret
     fun getSongsByTitleAndInterpret(title: String, interpret: String, accessToken: String): List<String> {
         val client = HttpClients.createDefault()
-        val request = HttpGet("https://api.spotify.com/v1/search?q=track:$title&artist:$interpret&type=track")
+        val request = HttpGet("https://api.spotify.com/v1/search?q=track:$title&artist:$interpret&type=track") //Spotify Web API wird aufgerufen
         request.addHeader("Authorization", "Bearer $accessToken")
         val response = client.execute(request)
-        val data = JSONObject(EntityUtils.toString(response.entity))
+        val data = JSONObject(EntityUtils.toString(response.entity)) //Antwort der Spotify Web API wird geparst (Aufteilung in Songs und Interpreten)
         val songs = mutableListOf<String>()
         val items = data.getJSONObject("tracks").getJSONArray("items")
         for (i in 0 until items.length()) {
-            songs.add(items.getJSONObject(i).getString("name"))
+            songs.add(items.getJSONObject(i).getString("name")) //Songnamen werden zur Playlist hinzugefügt
         }
         return songs
     }
