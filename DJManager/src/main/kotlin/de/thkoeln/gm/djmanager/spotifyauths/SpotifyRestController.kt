@@ -29,7 +29,7 @@ class SpotifySearchController(private val songsService: SongsService) {
         return responseEntity.body ?: "No results found"
     }
 
-
+    //Nach einem Song suchen und abspeichern
     @GetMapping("/findAndSaveOneSong")
     fun findAndSaveOneSong(
         @RequestParam("song") song: String,
@@ -46,6 +46,7 @@ class SpotifySearchController(private val songsService: SongsService) {
         }
     }
 
+    //Suchen nach Titel und Interpret
     @GetMapping("/findSongs")
     fun findSongs(
         @RequestParam("song") song: String,
