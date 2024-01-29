@@ -16,6 +16,7 @@ import de.thkoeln.gm.djmanager.songs.Song
 @RestController
 class SpotifySearchController(private val songsService: SongsService) {
 
+     //Nach einem Song suchen
     @GetMapping("/spotifyauth")
     fun searchSong(
         @RequestParam("song") song: String,
